@@ -14,16 +14,16 @@ With almost 20k unique buyers, the insights enable segment behaviors such as:
 5. How many products they explore
 6. Segmentation model identifies
 
-🔥 VIP Customers
+VIP Customers
 Long-term customers
 Spending more than $5,000
 Driving a disproportionate share of $29.3M revenue
 
-⭐ Regular Customers
+Regular Customers
 Loyal buyers with steady order habits
 Contributing significantly to stable monthly revenue
 
-🌱 New Customers
+New Customers
 The growth engine — thousands of first-time buyers
 Potential future VIPs
 
@@ -50,7 +50,7 @@ The segmentation shows:
 
 Most businesses show an 80/20 pattern — the data likely confirms this:
 
-📊 20% of products generate more than 80% of your revenue.
+20% of products generate more than 80% of your revenue.
 
 ## Time Story — How Sales Evolved Month Over Month
 The monthly time-series SQL reveals:
