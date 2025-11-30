@@ -1,35 +1,49 @@
-USE sqltest;
-SELECT 
-	min(order_date), 
-	max(order_date),
-	timestampdiff(month, min(order_date),max(order_date)) as order_range_year
-FROM gold_fact_sales gfs 
+-- Find the total sales
+SELECT SUM(sales_amount) FROM gold_fact_sales; 
+-- Find how many items sold
+SELECT SUM(quantity) FROM gold_fact_sales gfs ;
+-- Find the average selling price
+SELECT AVG(price) FROM gold_fact_sales gfs;
+-- Find the total number of orders
+SELECT COUNT(DISTINCT order_number) FROM gold_fact_sales gfs;
+-- Find the total number of products
+SELECT COUNT(DISTINCT product_id) FROM gold_dim_products gdp;
+-- Find the total number of customer ordering
+SELECT COUNT(DISTINCT customer_id) FROM gold_dim_customers gdc;
 
+-- Generate a report that shows all key metrics: 
+SELECT 'Total sales' as measure_name, SUM(sales_amount) as measure_value FROM gold_fact_sales gfs 
+UNION ALL
+SELECT 'Total quantity', SUM(quantity) FROM gold_fact_sales gfs
+UNION ALL
+SELECT 'Average Price', AVG(price) FROM gold_fact_sales gfs
+UNION ALL
+SELECT 'Total Number Of Order', COUNT(DISTINCT order_number) FROM gold_fact_sales gfs
+UNION ALL
+SELECT 'Total Number Of Products', COUNT(DISTINCT product_id) FROM gold_dim_products gdp
+UNION ALL
+SELECT 'Total Number Of Customers', COUNT(DISTINCT customer_id) FROM gold_dim_customers gdc
+
+-- Converts string value (' ') into NULL values	in birthdate column
 UPDATE sqltest.gold_dim_customers
 SET birthdate = NULL
 WHERE birthdate = '';
-
+		
+-- Find the youngest and oldest customer
 SELECT 
 	min(birthdate),
 	max(birthdate),
 	timestampdiff(year,min(birthdate), CURRENT_DATE())
 FROM gold_dim_customers gdc 
 
-SELECT * FROM gold_fact_sales gfs;
-SELECT SUM(sales_amount) FROM gold_fact_sales; 
-SELECT SUM(quantity) FROM gold_fact_sales gfs ;
-SELECT AVG(price) FROM gold_fact_sales gfs;
-SELECT COUNT(DISTINCT order_number) FROM gold_fact_sales gfs;
-SELECT COUNT(DISTINCT product_id) FROM gold_dim_products gdp;
-SELECT COUNT(DISTINCT customer_id) FROM gold_dim_customers gdc;
-
--- Generate a report that shows all key metrics: 
-SELECT 'Total sales' as measure_name, SUM(sales_amount) as measure_value FROM gold_fact_sales gfs 
-UNION ALL
-SELECT 'Total quantity' as measure_name, SUM(quantity) as measure_value FROM gold_fact_sales gfs;
+-- Find the date of the first and last order
+SELECT 
+	min(order_date), 
+	max(order_date),
+	timestampdiff(month, min(order_date),max(order_date)) as order_range_year
+FROM gold_fact_sales gfs 
 
 -- Total customers by countries
-
 SELECT COUNT(customer_id), Country FROM gold_dim_customers gdc 
 GROUP BY Country 
 ORDER BY COUNT(customer_id) DESC;
@@ -62,7 +76,6 @@ LEFT JOIN gold_dim_products gdp ON gfs.product_key = gdp.product_key
 GROUP BY gdp.product_name 
 ORDER BY SUM(sales_amount) DESC
 LIMIT 5;
-
 
 SELECT *
 FROM 
@@ -98,7 +111,6 @@ WHERE gfs.order_date  is not NULL
 GROUP BY date_format(order_date,'%Y-%m-01')
 ORDER BY date_format(order_date,'%Y-%m-01');
 
-
 -- Cumulative Analysis
 SELECT 
 month_year , 
@@ -119,7 +131,6 @@ GROUP BY date_format(order_date,'%Y-%m-01'))t;
 
 -- Performance Analysis
 /* analyze yearly performance of products by comparing sales to both average and previous year sales */
-
 -- Using subs query
 
 SELECT *,
@@ -163,9 +174,7 @@ SELECT
 FROM yearly_product_sales
 ORDER BY product_name, order_year
 
-
 -- Part To Whole Analysis
-
 -- Categories contribue the most to overall sales
 
 SELECT *, 
@@ -182,7 +191,6 @@ GROUP BY category)t
 ORDER BY category_sales DESC;
 
 -- Data Segmentation
-
 -- Segment product into cost ranges and count how many products fall into each segment
 
 WITH product_segments AS (
@@ -259,12 +267,9 @@ Highlight:
 ============================================================================================================================
 */ 
 
-
 /* -------------------------------------------------------------------------------------------------------------------------
 1) Base Query: Retrieves core columns from tables
 --------------------------------------------------------------------------------------------------------------------------*/
-
-
 CREATE VIEW gold_report_customer AS 
 
 WITH base_query AS (
@@ -328,9 +333,7 @@ SELECT
 		ELSE total_sales/lifespan END AS avg_monthly_spend
 FROM customer_aggregation;
 
-
 -- Build Product Report
-
 /* 
 ============================================================================================================================
 Product Report
@@ -350,15 +353,12 @@ Highlight:
 	- Recency (months since last order),
 	- Average order revenue (AOR),
 	- Average monthly revenue
-
 ============================================================================================================================
 */ 
-
 
 /* -------------------------------------------------------------------------------------------------------------------------
 1) Base Query: Retrieves core columns from tables
 --------------------------------------------------------------------------------------------------------------------------*/
-
 CREATE VIEW gold_report_product AS 
 
 WITH base_query AS (
@@ -421,11 +421,3 @@ SELECT
 -- average monthly revenue
 	total_sales/ lifespan as average_monthly_revenue
 FROM product_aggregation
-	
-
-
-
-
-
-
-
