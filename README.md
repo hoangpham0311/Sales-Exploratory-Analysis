@@ -1,4 +1,4 @@
-# Sales-Exploratory-Analysis
+# Sales Exploratory Analysis
 
 ## Scale of Business
 Over the years captured in the dataset, the business generated $29,356,250 in total revenue, 60,423 units sold. Average selling price of $486.04. 
